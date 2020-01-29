@@ -60,7 +60,7 @@
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('profil') }}"/>
+                                    <a class="dropdown-item" href="{{ route('profil') }}">
                                         {{ __('Profil') }}
                                     </a>
 
