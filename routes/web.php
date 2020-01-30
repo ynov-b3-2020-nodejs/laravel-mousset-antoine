@@ -11,16 +11,21 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Auth::routes(['verify' => true]);
 
-Auth::routes();
+Route::redirect('/', 'welcome');
+
+Route::get('/welcome', 'WelcomeController@index')->middleware('verified');
+
+
+
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/profil', 'ProfilController@index')->name('profil');
+Route::resource('products','ProductController');
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/crud', 'CrudController@index')->name('crud');
+
+
+
+

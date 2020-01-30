@@ -1,3 +1,5 @@
+@extends('layouts.app')
+@section('content')
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -86,28 +88,11 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Bienvenue, inscrivez vous
+                    Bienvenue {{ Auth::user()->name }}
 
                 </div>
-                <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-                <script>
-                    function onSignIn(gitUser) {
-                        // Useful data for your client-side scripts:
-                        var profile = gitUser.getBasicProfile();
-                        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-                        console.log('Full Name: ' + profile.getName());
-                        console.log('Given Name: ' + profile.getGivenName());
-                        console.log('Family Name: ' + profile.getFamilyName());
-                        console.log("Image URL: " + profile.getImageUrl());
-                        console.log("Email: " + profile.getEmail());
 
-                        // The ID token you need to pass to your backend:
-                        var id_token = gitUser.getAuthResponse().id_token;
-                        console.log("ID Token: " + id_token);
-                    }
-                </script>
-
-            </div>
+        </div>
         </div>
     </body>
 </html>

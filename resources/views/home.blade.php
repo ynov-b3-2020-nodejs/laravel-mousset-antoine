@@ -14,11 +14,10 @@
                         </div>
                     @endif
 
-             Tu es bien connecté,
-                    accède a ton profil </br>
-                        <button type="button" class="btn btn-dark"><a href="{{ route('profil') }}">Accéder </a></button>
 
-</button>
+                        <a type="text"><a href="{{ route('profil') }}">Accéder au profil </a></a>
+
+
                 </div>
             </div>
         </div>
