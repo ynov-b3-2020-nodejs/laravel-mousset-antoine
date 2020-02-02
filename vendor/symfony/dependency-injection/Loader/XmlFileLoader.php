@@ -36,10 +36,12 @@ class XmlFileLoader extends FileLoader
 {
     const NS = 'http://symfony.com/schema/dic/services';
 
+    protected $autoRegisterAliasesForSinglyImplementedInterfaces = false;
+
     /**
      * {@inheritdoc}
      */
-    public function load($resource, $type = null)
+    public function load($resource, string $type = null)
     {
         $path = $this->locator->locate($resource);
 
@@ -73,7 +75,7 @@ class XmlFileLoader extends FileLoader
     /**
      * {@inheritdoc}
      */
-    public function supports($resource, $type = null)
+    public function supports($resource, string $type = null)
     {
         if (!\is_string($resource)) {
             return false;

@@ -139,6 +139,8 @@ class ProxyAdapter implements AdapterInterface, CacheInterface, PruneableInterfa
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function hasItem($key)
     {
@@ -147,14 +149,22 @@ class ProxyAdapter implements AdapterInterface, CacheInterface, PruneableInterfa
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
-    public function clear()
+    public function clear(string $prefix = '')
     {
+        if ($this->pool instanceof AdapterInterface) {
+            return $this->pool->clear($this->namespace.$prefix);
+        }
+
         return $this->pool->clear();
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function deleteItem($key)
     {
@@ -163,6 +173,8 @@ class ProxyAdapter implements AdapterInterface, CacheInterface, PruneableInterfa
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function deleteItems(array $keys)
     {
@@ -177,6 +189,8 @@ class ProxyAdapter implements AdapterInterface, CacheInterface, PruneableInterfa
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function save(CacheItemInterface $item)
     {
@@ -185,6 +199,8 @@ class ProxyAdapter implements AdapterInterface, CacheInterface, PruneableInterfa
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function saveDeferred(CacheItemInterface $item)
     {
@@ -193,13 +209,15 @@ class ProxyAdapter implements AdapterInterface, CacheInterface, PruneableInterfa
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function commit()
     {
         return $this->pool->commit();
     }
 
-    private function doSave(CacheItemInterface $item, $method)
+    private function doSave(CacheItemInterface $item, string $method)
     {
         if (!$item instanceof CacheItem) {
             return false;
@@ -225,7 +243,7 @@ class ProxyAdapter implements AdapterInterface, CacheInterface, PruneableInterfa
         return $this->pool->$method($innerItem);
     }
 
-    private function generateItems($items)
+    private function generateItems(iterable $items)
     {
         $f = $this->createCacheItem;
 
@@ -238,7 +256,7 @@ class ProxyAdapter implements AdapterInterface, CacheInterface, PruneableInterfa
         }
     }
 
-    private function getId($key)
+    private function getId($key): string
     {
         CacheItem::validateKey($key);
 

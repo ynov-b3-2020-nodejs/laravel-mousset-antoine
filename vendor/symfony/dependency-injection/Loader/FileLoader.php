@@ -36,6 +36,7 @@ abstract class FileLoader extends BaseFileLoader
     protected $instanceof = [];
     protected $interfaces = [];
     protected $singlyImplemented = [];
+    protected $autoRegisterAliasesForSinglyImplementedInterfaces = true;
 
     public function __construct(ContainerBuilder $container, FileLocatorInterface $locator)
     {
@@ -47,18 +48,16 @@ abstract class FileLoader extends BaseFileLoader
     /**
      * {@inheritdoc}
      *
-     * @param bool|string          $ignoreErrors Whether errors should be ignored; pass "not_found" to ignore only when the loaded resource is not found
-     * @param string|string[]|null $exclude      Glob patterns to exclude from the import
+     * @param bool|string $ignoreErrors Whether errors should be ignored; pass "not_found" to ignore only when the loaded resource is not found
      */
-    public function import($resource, $type = null, $ignoreErrors = false, $sourceResource = null/*, $exclude = null*/)
+    public function import($resource, $type = null, $ignoreErrors = false, $sourceResource = null, $exclude = null)
     {
         $args = \func_get_args();
 
         if ($ignoreNotFound = 'not_found' === $ignoreErrors) {
             $args[2] = false;
         } elseif (!\is_bool($ignoreErrors)) {
-            @trigger_error(sprintf('Invalid argument $ignoreErrors provided to %s::import(): boolean or "not_found" expected, %s given.', \get_class($this), \gettype($ignoreErrors)), E_USER_DEPRECATED);
-            $args[2] = (bool) $ignoreErrors;
+            throw new \TypeError(sprintf('Invalid argument $ignoreErrors provided to %s::import(): boolean or "not_found" expected, %s given.', \get_class($this), \gettype($ignoreErrors)));
         }
 
         try {
@@ -74,7 +73,7 @@ abstract class FileLoader extends BaseFileLoader
                 }
             }
 
-            if ($args !== $frame['args']) {
+            if (__FILE__ !== $frame['file']) {
                 throw $e;
             }
         }
@@ -116,12 +115,16 @@ abstract class FileLoader extends BaseFileLoader
                 }
             }
         }
+
+        if ($this->autoRegisterAliasesForSinglyImplementedInterfaces) {
+            $this->registerAliasesForSinglyImplementedInterfaces();
+        }
     }
 
     public function registerAliasesForSinglyImplementedInterfaces()
     {
         foreach ($this->interfaces as $interface) {
-            if (!empty($this->singlyImplemented[$interface]) && !$this->container->hasAlias($interface)) {
+            if (!empty($this->singlyImplemented[$interface]) && !$this->container->has($interface)) {
                 $this->container->setAlias($interface, $this->singlyImplemented[$interface])->setPublic(false);
             }
         }

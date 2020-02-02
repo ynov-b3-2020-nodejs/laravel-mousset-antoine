@@ -52,13 +52,13 @@ class PassConfig
             new ValidateEnvPlaceholdersPass(),
             new ResolveChildDefinitionsPass(),
             new RegisterServiceSubscribersPass(),
-            new DecoratorServicePass(),
-            new ResolveParameterPlaceHoldersPass(false),
+            new ResolveParameterPlaceHoldersPass(false, false),
             new ResolveFactoryClassPass(),
             new ResolveNamedArgumentsPass(),
             new AutowireRequiredMethodsPass(),
             new ResolveBindingsPass(),
             new ServiceLocatorTagPass(),
+            new DecoratorServicePass(),
             new CheckDefinitionValidityPass(),
             new AutowirePass(false),
             new ResolveTaggedIteratorArgumentPass(),
@@ -113,12 +113,9 @@ class PassConfig
     /**
      * Adds a pass.
      *
-     * @param string $type     The pass type
-     * @param int    $priority Used to sort the passes
-     *
      * @throws InvalidArgumentException when a pass type doesn't exist
      */
-    public function addPass(CompilerPassInterface $pass, $type = self::TYPE_BEFORE_OPTIMIZATION, int $priority = 0)
+    public function addPass(CompilerPassInterface $pass, string $type = self::TYPE_BEFORE_OPTIMIZATION, int $priority = 0)
     {
         $property = $type.'Passes';
         if (!isset($this->$property)) {
